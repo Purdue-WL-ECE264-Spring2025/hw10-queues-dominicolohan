@@ -55,6 +55,24 @@ int number_of_moves(struct game_state start) {
         return current.num_steps;
       }
 
+      if(current.empty_row > 0){
+        struct game_state down = current;
+        move_down(&down);
+        if(check_visited(&visited, down)){
+            enqueue(&q, down);
+            //enqueue(&visited, down);
+        }
+      }
+      
+      if(current.empty_col > 0){
+        struct game_state right = current;
+        move_right(&right);
+        if(check_visited(&visited, right)){
+            enqueue(&q, right);
+            //enqueue(&visited, right);
+        }
+      }
+
       if(current.empty_row < 3){
         struct game_state up = current;
         move_up(&up);
@@ -75,23 +93,9 @@ int number_of_moves(struct game_state start) {
       }
 
       
-      if(current.empty_col > 0){
-        struct game_state right = current;
-        move_right(&right);
-        if(check_visited(&visited, right)){
-            enqueue(&q, right);
-            //enqueue(&visited, right);
-        }
-      }
+      
 
-      if(current.empty_row > 0){
-        struct game_state down = current;
-        move_down(&down);
-        if(check_visited(&visited, down)){
-            enqueue(&q, down);
-            //enqueue(&visited, down);
-        }
-      }
+      
     }
 
     free_list(q.data);
