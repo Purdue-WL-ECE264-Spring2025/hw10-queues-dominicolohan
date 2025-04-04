@@ -24,9 +24,12 @@ int tiles_equal(struct game_state current, struct game_state goal){
 
 int check_visited(struct queue *visited, struct game_state current){
     struct list_node *checker = visited->data.head;
+    current.num_steps = 0;
+    size_t ser_current = serialize(current);
     while(checker!=NULL){
-      struct game_state check = deserialize(checker->value);
-      if(tiles_equal(check, current)){
+      //struct game_state check = deserialize(checker->value);
+      //if(tiles_equal(check, current)){
+      if(checker->value == ser_current){
         return 0;
       }
       checker = checker->next;
@@ -46,9 +49,13 @@ int number_of_moves(struct game_state start) {
 
     if(tiles_equal(start, goal)){ return 0; }
     enqueue(&q, start);
+    int num_steps;
     while(q.data.head != NULL){ 
       struct game_state current = dequeue(&q); // takes the queue and makes it the current state
+      num_steps = current.num_steps;
+      current.num_steps = 0;
       enqueue(&visited, current);
+      current.num_steps = num_steps;
       if(tiles_equal(current, goal)){ // if the current state equals the goal, then return the num steps it took to get there
         free_list(visited.data);
         free_list(q.data);
@@ -63,7 +70,7 @@ int number_of_moves(struct game_state start) {
             //enqueue(&visited, down);
         }
       }
-      
+
       if(current.empty_col > 0){
         struct game_state right = current;
         move_right(&right);
@@ -91,11 +98,6 @@ int number_of_moves(struct game_state start) {
             //enqueue(&visited, left); // adds to visited
         }
       }
-
-      
-      
-
-      
     }
 
     free_list(q.data);
